@@ -792,8 +792,8 @@ bool CXBMCApp::HasLaunchIntent(const std::string &package)
   return GetPackageManager().getLaunchIntentForPackage(package) != NULL;
 }
 
-// Note intent, dataType, dataURI all default to ""
-bool CXBMCApp::StartActivity(const std::string &package, const std::string &intent, const std::string &dataType, const std::string &dataURI)
+// Note intent, dataType, dataURI, component, extras all default to ""
+bool CXBMCApp::StartActivity(const std::string &package, const std::string &intent, const std::string &dataType, const std::string &dataURI, const std::string &component, const std::map<std::string, std::string> &extras, const int flags)
 {
   CJNIIntent newIntent = intent.empty() ?
     GetPackageManager().getLaunchIntentForPackage(package) :
@@ -812,6 +812,26 @@ bool CXBMCApp::StartActivity(const std::string &package, const std::string &inte
       return false;
 
     newIntent.setDataAndType(jniURI, dataType);
+  }
+  if (!extras.empty()) 
+  {
+    for (auto const& extra: extras) 
+    {
+      newIntent.putExtra(extra.first, extra.second);
+    }
+  }
+
+  if (flags != -1)
+  {
+    newIntent.setFlags(flags);
+  }
+  if(component != "") 
+  {
+    newIntent.setClassName(package, component);
+  }
+  else 
+  {
+    newIntent.setPackage(package);
   }
 
   newIntent.setPackage(package);

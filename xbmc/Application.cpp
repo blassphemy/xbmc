@@ -2095,10 +2095,33 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
 #if defined(TARGET_ANDROID)
     if (pMsg->params.size())
     {
+      std::map<std::string, std::string> extras {};
+      if(pMsg->params.size() > 5)
+      {
+        std::stringstream keyValuePairs(pMsg->params[5]);
+
+        while(keyValuePairs.good())
+        {
+          std::string pair;
+          getline(keyValuePairs, pair, ' ');
+          
+          std::string key = pair.substr(0, pair.find(":"));
+          std::string value = pair.substr(pair.find(":") + 1);
+
+          if(key != "" && value != "") 
+          {        
+              extras[key] = value;
+          }
+        }
+      }
+
       CXBMCApp::StartActivity(pMsg->params[0],
         pMsg->params.size() > 1 ? pMsg->params[1] : "",
         pMsg->params.size() > 2 ? pMsg->params[2] : "",
-        pMsg->params.size() > 3 ? pMsg->params[3] : "");
+        pMsg->params.size() > 3 ? pMsg->params[3] : "",
+        pMsg->params.size() > 4 ? pMsg->params[4] : "",
+        extras,
+        pMsg->params.size() > 6 ? atoi(pMsg->params[6].c_str()) : -1);
     }
 #endif
   }

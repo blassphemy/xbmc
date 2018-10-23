@@ -143,7 +143,7 @@ public:
   static bool IsHeadsetPlugged();
   static bool IsHDMIPlugged();
 
-  static bool StartActivity(const std::string &package, const std::string &intent = std::string(), const std::string &dataType = std::string(), const std::string &dataURI = std::string());
+  static bool StartActivity(const std::string &package, const std::string &intent = "", const std::string &dataType = "", const std::string &dataURI = "", const std::string &component = "", const std::map<std::string, std::string> &extras = std::map<std::string, std::string> {}, const int flags = -1);  static std::vector <androidPackage> GetApplications();
   static std::vector <androidPackage> GetApplications();
 
   /*!
